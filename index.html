@@ -22,7 +22,7 @@
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 400px;
+            max-width: 600px;
             text-align: center;
         }
 
@@ -32,48 +32,81 @@
             margin-bottom: 15px;
         }
 
-        .display {
-            background-color: #f0f0f0;
-            padding: 10px;
-            font-size: 24px;
-            text-align: right;
+        .triangle-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            margin: 20px auto;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 250px solid #007bff;
+            margin: 0 auto;
+        }
+
+        .input-field {
+            position: absolute;
+            width: 60px;
+            padding: 5px;
+            font-size: 14px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            margin-bottom: 10px;
-            height: 50px;
+            text-align: center;
         }
 
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        .side-a {
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
-        .button {
-            background-color: #007bff;
+        .side-b {
+            bottom: 10px;
+            left: 20%;
+        }
+
+        .side-c {
+            bottom: 10px;
+            right: 20%;
+        }
+
+        .angle-alpha {
+            top: 20px;
+            left: 20px;
+        }
+
+        .angle-beta {
+            top: 20px;
+            right: 20px;
+        }
+
+        .angle-gamma {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        button {
+            background: linear-gradient(145deg, #007bff, #0056b3);
             color: white;
-            font-size: 18px;
+            font-size: 1rem;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
-            padding: 15px;
             cursor: pointer;
             transition: transform 0.1s;
         }
 
-        .button:hover {
+        button:hover {
             transform: scale(1.05);
         }
 
-        .button:active {
+        button:active {
             transform: scale(0.95);
-        }
-
-        .button.operator {
-            background-color: #ff9500;
-        }
-
-        .button.clear {
-            background-color: #ff3b30;
         }
 
         .result {
@@ -85,64 +118,78 @@
 </head>
 <body>
     <div class="calculator">
-        <h1>Калькулятор</h1>
-        <div class="display" id="display">0</div>
-        <div class="buttons">
-            <!-- Строки кнопок -->
-            <button class="button clear" onclick="clearDisplay()">C</button>
-            <button class="button" onclick="inputValue('←')">←</button>
-            <button class="button operator" onclick="inputValue('%')">%</button>
-            <button class="button operator" onclick="inputValue('÷')">÷</button>
-
-            <button class="button" onclick="inputValue('7')">7</button>
-            <button class="button" onclick="inputValue('8')">8</button>
-            <button class="button" onclick="inputValue('9')">9</button>
-            <button class="button operator" onclick="inputValue('×')">×</button>
-
-            <button class="button" onclick="inputValue('4')">4</button>
-            <button class="button" onclick="inputValue('5')">5</button>
-            <button class="button" onclick="inputValue('6')">6</button>
-            <button class="button operator" onclick="inputValue('-')">−</button>
-
-            <button class="button" onclick="inputValue('1')">1</button>
-            <button class="button" onclick="inputValue('2')">2</button>
-            <button class="button" onclick="inputValue('3')">3</button>
-            <button class="button operator" onclick="inputValue('+')">+</button>
-
-            <button class="button" onclick="inputValue('0')" style="grid-column: span 2;">0</button>
-            <button class="button" onclick="inputValue('.')">.</button>
-            <button class="button operator" onclick="calculateResult()">=</button>
+        <h1>Геометрический калькулятор треугольников</h1>
+        <div class="triangle-container">
+            <div class="triangle"></div>
+            <!-- Поля для ввода данных -->
+            <input type="number" class="input-field angle-alpha" id="angleAlpha" placeholder="α">
+            <input type="number" class="input-field angle-beta" id="angleBeta" placeholder="β">
+            <input type="number" class="input-field angle-gamma" id="angleGamma" placeholder="γ">
+            <input type="number" class="input-field side-a" id="sideA" placeholder="A">
+            <input type="number" class="input-field side-b" id="sideB" placeholder="B">
+            <input type="number" class="input-field side-c" id="sideC" placeholder="C">
         </div>
+        <button onclick="calculate()">Рассчитать</button>
         <div class="result" id="result"></div>
     </div>
 
     <script>
-        // Функция для ввода значений
-        function inputValue(value) {
-            const display = document.getElementById('display');
-            if (display.textContent === '0' || display.textContent === 'Ошибка') {
-                display.textContent = value;
-            } else {
-                display.textContent += value;
-            }
+        // Функция для перевода градусов в радианы
+        function toRadians(degrees) {
+            return degrees * Math.PI / 180;
         }
 
-        // Функция для очистки дисплея
-        function clearDisplay() {
-            document.getElementById('display').textContent = '0';
+        // Функция для перевода радиан в градусы
+        function toDegrees(radians) {
+            return radians * 180 / Math.PI;
         }
 
-        // Функция для расчета результата
-        function calculateResult() {
+        // Функция для расчета треугольника
+        function calculate() {
+            const sideA = parseFloat(document.getElementById('sideA').value);
+            const sideB = parseFloat(document.getElementById('sideB').value);
+            const sideC = parseFloat(document.getElementById('sideC').value);
+            const angleAlpha = parseFloat(document.getElementById('angleAlpha').value);
+            const angleBeta = parseFloat(document.getElementById('angleBeta').value);
+            const angleGamma = parseFloat(document.getElementById('angleGamma').value);
+
+            let result = '';
+
             try {
-                const display = document.getElementById('display');
-                let expression = display.textContent
-                    .replace('×', '*')
-                    .replace('÷', '/')
-                    .replace('−', '-');
-                display.textContent = eval(expression);
+                // Проверка на минимальное количество данных
+                const inputs = [sideA, sideB, sideC, angleAlpha, angleBeta, angleGamma].filter(val => !isNaN(val));
+                if (inputs.length < 3) {
+                    throw new Error("Введите минимум 3 параметра.");
+                }
+
+                // Теорема синусов
+                if (!isNaN(sideA) && !isNaN(angleAlpha) && !isNaN(sideB)) {
+                    const angleBetaValue = toDegrees(Math.asin((Math.sin(toRadians(angleAlpha)) * sideB) / sideA));
+                    result += `Угол β: ${angleBetaValue.toFixed(2)}°<br>`;
+                }
+
+                if (!isNaN(sideA) && !isNaN(angleAlpha) && !isNaN(angleBeta)) {
+                    const angleGammaValue = 180 - angleAlpha - angleBeta;
+                    const sideCValue = (sideA * Math.sin(toRadians(angleGammaValue))) / Math.sin(toRadians(angleAlpha));
+                    result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
+                }
+
+                // Теорема косинусов
+                if (!isNaN(sideA) && !isNaN(sideB) && !isNaN(angleGamma)) {
+                    const sideCValue = Math.sqrt(sideA ** 2 + sideB ** 2 - 2 * sideA * sideB * Math.cos(toRadians(angleGamma)));
+                    result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
+                }
+
+                // Сумма углов треугольника
+                if (!isNaN(angleAlpha) && !isNaN(angleBeta)) {
+                    const angleGammaValue = 180 - angleAlpha - angleBeta;
+                    result += `Угол γ: ${angleGammaValue.toFixed(2)}°<br>`;
+                }
+
+                // Вывод результата
+                document.getElementById('result').innerHTML = result || "Недостаточно данных для расчета.";
             } catch (error) {
-                document.getElementById('display').textContent = 'Ошибка';
+                document.getElementById('result').innerHTML = `Ошибка: ${error.message}`;
             }
         }
     </script>
