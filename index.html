@@ -3,197 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Геометрический калькулятор треугольников</title>
+    <title>Геометрический калькулятор</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: #fff;
+            min-height: 100vh;
+            background: #f5f5f5;
         }
 
-        .calculator {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        .calculator-container {
+            position: relative;
             width: 100%;
             max-width: 600px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 15px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .triangle-container {
             position: relative;
             width: 100%;
-            height: 250px;
-            margin: 20px auto;
+            height: 0;
+            padding-bottom: 86.6%; /* Соотношение для равностороннего треугольника */
+            overflow: hidden;
         }
 
         .triangle {
-            width: 0;
-            height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-bottom: 250px solid #007bff;
-            margin: 0 auto;
-        }
-
-        .input-field {
             position: absolute;
-            width: 60px;
-            padding: 5px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.8);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-bottom: 100% solid #fff;
+            border-left: 57.7% solid transparent;
+            border-right: 57.7% solid transparent;
         }
 
-        /* Позиционирование полей ввода для сторон */
-        .side-a {
-            bottom: -30px;
+        .vertex {
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+
+        .vertex-a {
+            top: 0;
             left: 50%;
-            transform: translateX(-50%);
+        }
+
+        .vertex-b {
+            bottom: 0;
+            left: 0;
+        }
+
+        .vertex-c {
+            bottom: 0;
+            right: 0;
+        }
+
+        .angle-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: rotate(-45deg);
+        }
+
+        .angle-input-field {
+            width: 40px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+
+        .side {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .side-a {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .side-b {
-            top: 50%;
-            right: 10%;
-            transform: translateY(-50%);
+            bottom: 0;
+            left: 25%;
         }
 
         .side-c {
-            top: 50%;
-            left: 10%;
-            transform: translateY(-50%);
+            bottom: 0;
+            right: 25%;
         }
 
-        /* Позиционирование полей ввода для углов */
-        .angle-alpha {
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+        .side-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .angle-beta {
-            top: 20px;
-            right: 20%;
+        .side-input-field {
+            width: 40px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            margin-bottom: 5px;
         }
 
-        .angle-gamma {
-            top: 20px;
-            left: 20%;
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
         }
 
-        button {
-            background: linear-gradient(145deg, #007bff, #0056b3);
-            color: white;
-            font-size: 1rem;
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn {
             padding: 10px 20px;
+            margin: 0 10px;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
             cursor: pointer;
-            transition: transform 0.1s;
-            margin-top: 20px;
+            transition: background 0.3s;
         }
 
-        button:hover {
-            transform: scale(1.05);
-        }
-
-        button:active {
-            transform: scale(0.95);
-        }
-
-        .result {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #28a745;
-        }
-    </style>
-</head>
-<body>
-    <div class="calculator">
-        <h1>Геометрический калькулятор треугольников</h1>
-        <div class="triangle-container">
-            <div class="triangle"></div>
-            <!-- Поля для ввода данных -->
-            <input type="number" class="input-field side-a" id="sideA" placeholder="A">
-            <input type="number" class="input-field side-b" id="sideB" placeholder="B">
-            <input type="number" class="input-field side-c" id="sideC" placeholder="C">
-            <input type="number" class="input-field angle-alpha" id="angleAlpha" placeholder="α">
-            <input type="number" class="input-field angle-beta" id="angleBeta" placeholder="β">
-            <input type="number" class="input-field angle-gamma" id="angleGamma" placeholder="γ">
-        </div>
-        <button onclick="calculate()">Рассчитать</button>
-        <div class="result" id="result"></div>
-    </div>
-
-    <script>
-        function toRadians(degrees) {
-            return degrees * Math.PI / 180;
-        }
-
-        function toDegrees(radians) {
-            return radians * 180 / Math.PI;
-        }
-
-        function calculate() {
-            const sideA = parseFloat(document.getElementById('sideA').value);
-            const sideB = parseFloat(document.getElementById('sideB').value);
-            const sideC = parseFloat(document.getElementById('sideC').value);
-            const angleAlpha = parseFloat(document.getElementById('angleAlpha').value);
-            const angleBeta = parseFloat(document.getElementById('angleBeta').value);
-            const angleGamma = parseFloat(document.getElementById('angleGamma').value);
-
-            let result = '';
-
-            try {
-                const inputs = [sideA, sideB, sideC, angleAlpha, angleBeta, angleGamma].filter(val => !isNaN(val));
-                if (inputs.length < 3) {
-                    throw new Error("Введите минимум 3 параметра.");
-                }
-
-                // Теорема синусов
-                if (!isNaN(sideA) && !isNaN(angleAlpha) && !isNaN(sideB)) {
-                    const angleBetaValue = toDegrees(Math.asin((Math.sin(toRadians(angleAlpha)) * sideB) / sideA));
-                    result += `Угол β: ${angleBetaValue.toFixed(2)}°<br>`;
-                }
-
-                if (!isNaN(sideA) && !isNaN(angleAlpha) && !isNaN(angleBeta)) {
-                    const angleGammaValue = 180 - angleAlpha - angleBeta;
-                    const sideCValue = (sideA * Math.sin(toRadians(angleGammaValue))) / Math.sin(toRadians(angleAlpha));
-                    result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
-                }
-
-                // Теорема косинусов
-                if (!isNaN(sideA) && !isNaN(sideB) && !isNaN(angleGamma)) {
-                    const sideCValue = Math.sqrt(sideA ** 2 + sideB ** 2 - 2 * sideA * sideB * Math.cos(toRadians(angleGamma)));
-                    result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
-                }
-
-                // Сумма углов треугольника
-                if (!isNaN(angleAlpha) && !isNaN(angleBeta)) {
-                    const angleGammaValue = 180 - angleAlpha - angleBeta;
-                    result += `Угол γ: ${angleGammaValue.toFixed(2)}°<br>`;
-                }
-
-                // Вывод результата
-                document.getElementById('result').innerHTML = result || "Недостаточно данных для расчета.";
-            } catch (error) {
-                document.getElementById('result').innerHTML = `Ошибка: ${error.message}`;
-            }
-        }
-    </script>
-</body>
-</html>
+        .btn:hover
