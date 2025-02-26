@@ -56,8 +56,10 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
         }
 
+        /* Позиционирование полей ввода */
         .side-a {
             top: -30px;
             left: 50%;
@@ -66,26 +68,26 @@
 
         .side-b {
             bottom: 10px;
-            left: 20%;
+            left: 10%;
         }
 
         .side-c {
             bottom: 10px;
-            right: 20%;
+            right: 10%;
         }
 
         .angle-alpha {
             top: 20px;
-            left: 20px;
+            left: 30%;
         }
 
         .angle-beta {
             top: 20px;
-            right: 20px;
+            right: 30%;
         }
 
         .angle-gamma {
-            bottom: 10px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -99,6 +101,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: transform 0.1s;
+            margin-top: 20px;
         }
 
         button:hover {
@@ -122,12 +125,12 @@
         <div class="triangle-container">
             <div class="triangle"></div>
             <!-- Поля для ввода данных -->
-            <input type="number" class="input-field angle-alpha" id="angleAlpha" placeholder="α">
-            <input type="number" class="input-field angle-beta" id="angleBeta" placeholder="β">
-            <input type="number" class="input-field angle-gamma" id="angleGamma" placeholder="γ">
             <input type="number" class="input-field side-a" id="sideA" placeholder="A">
             <input type="number" class="input-field side-b" id="sideB" placeholder="B">
             <input type="number" class="input-field side-c" id="sideC" placeholder="C">
+            <input type="number" class="input-field angle-alpha" id="angleAlpha" placeholder="α">
+            <input type="number" class="input-field angle-beta" id="angleBeta" placeholder="β">
+            <input type="number" class="input-field angle-gamma" id="angleGamma" placeholder="γ">
         </div>
         <button onclick="calculate()">Рассчитать</button>
         <div class="result" id="result"></div>
@@ -158,6 +161,7 @@
                     throw new Error("Введите минимум 3 параметра.");
                 }
 
+                // Теорема синусов
                 if (!isNaN(sideA) && !isNaN(angleAlpha) && !isNaN(sideB)) {
                     const angleBetaValue = toDegrees(Math.asin((Math.sin(toRadians(angleAlpha)) * sideB) / sideA));
                     result += `Угол β: ${angleBetaValue.toFixed(2)}°<br>`;
@@ -169,16 +173,19 @@
                     result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
                 }
 
+                // Теорема косинусов
                 if (!isNaN(sideA) && !isNaN(sideB) && !isNaN(angleGamma)) {
                     const sideCValue = Math.sqrt(sideA ** 2 + sideB ** 2 - 2 * sideA * sideB * Math.cos(toRadians(angleGamma)));
                     result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
                 }
 
+                // Сумма углов треугольника
                 if (!isNaN(angleAlpha) && !isNaN(angleBeta)) {
                     const angleGammaValue = 180 - angleAlpha - angleBeta;
                     result += `Угол γ: ${angleGammaValue.toFixed(2)}°<br>`;
                 }
 
+                // Вывод результата
                 document.getElementById('result').innerHTML = result || "Недостаточно данных для расчета.";
             } catch (error) {
                 document.getElementById('result').innerHTML = `Ошибка: ${error.message}`;
