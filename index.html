@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Геометрический калькулятор треугольников</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: #fff;
+        }
+
+        .calculator {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .triangle-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin: 20px auto;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 200px solid #007bff;
+            margin: 0 auto;
+        }
+
+        .input-field {
+            position: absolute;
+            width: 50px;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .side-a {
+            top: -25px;
+            left: 125px;
+        }
+
+        .side-b {
+            bottom: 10px;
+            left: 50px;
+        }
+
+        .side-c {
+            bottom: 10px;
+            right: 50px;
+        }
+
+        .angle-a {
+            top: 10px;
+            left: 20px;
+        }
+
+        .angle-b {
+            top: 10px;
+            right: 20px;
+        }
+
+        .angle-c {
+            bottom: 10px;
+            left: 140px;
+        }
+
+        button {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Геометрический калькулятор треугольников</h1>
+        <div class="triangle-container">
+            <div class="triangle"></div>
+            <!-- Поля для ввода данных -->
+            <input type="number" class="input-field side-a" id="sideA" placeholder="A">
+            <input type="number" class="input-field side-b" id="sideB" placeholder="B">
+            <input type="number" class="input-field side-c" id="sideC" placeholder="C">
+            <input type="number" class="input-field angle-a" id="angleA" placeholder="∠A">
+            <input type="number" class="input-field angle-b" id="angleB" placeholder="∠B">
+            <input type="number" class="input-field angle-c" id="angleC" placeholder="∠C">
+        </div>
+        <button onclick="calculate()">Рассчитать</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // Функция для перевода градусов в радианы
+        function toRadians(degrees) {
+            return degrees * Math.PI / 180;
+        }
+
+        // Функция для перевода радиан в градусы
+        function toDegrees(radians) {
+            return radians * 180 / Math.PI;
+        }
+
+        // Функция для расчета треугольника
+        function calculate() {
+            const sideA = parseFloat(document.getElementById('sideA').value);
+            const sideB = parseFloat(document.getElementById('sideB').value);
+            const sideC = parseFloat(document.getElementById('sideC').value);
+            const angleA = parseFloat(document.getElementById('angleA').value);
+            const angleB = parseFloat(document.getElementById('angleB').value);
+            const angleC = parseFloat(document.getElementById('angleC').value);
+
+            let result = '';
+
+            try {
+                // Проверка на минимальное количество данных
+                const inputs = [sideA, sideB, sideC, angleA, angleB, angleC].filter(val => !isNaN(val));
+                if (inputs.length < 3) {
+                    throw new Error("Введите минимум 3 параметра.");
+                }
+
+                // Теорема синусов
+                if (!isNaN(sideA) && !isNaN(angleA) && !isNaN(sideB)) {
+                    const angleBValue = toDegrees(Math.asin((Math.sin(toRadians(angleA)) * sideB) / sideA));
+                    result += `Угол B: ${angleBValue.toFixed(2)}°<br>`;
+                }
+
+                if (!isNaN(sideA) && !isNaN(angleA) && !isNaN(angleB)) {
+                    const angleCValue = 180 - angleA - angleB;
+                    const sideCValue = (sideA * Math.sin(toRadians(angleCValue))) / Math.sin(toRadians(angleA));
+                    result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
+                }
+
+                // Теорема косинусов
+                if (!isNaN(sideA) && !isNaN(sideB) && !isNaN(angleC)) {
+                    const sideCValue = Math.sqrt(sideA ** 2 + sideB ** 2 - 2 * sideA * sideB * Math.cos(toRadians(angleC)));
+                    result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
+                }
+
+                // Сумма углов треугольника
+                if (!isNaN(angleA) && !isNaN(angleB)) {
+                    const angleCValue = 180 - angleA - angleB;
+                    result += `Угол C: ${angleCValue.toFixed(2)}°<br>`;
+                }
+
+                // Вывод результата
+                document.getElementById('result').innerHTML = result || "Недостаточно данных для расчета.";
+            } catch (error) {
+                document.getElementById('result').innerHTML = `Ошибка: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
