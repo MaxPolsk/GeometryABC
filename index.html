@@ -22,7 +22,7 @@
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 450px;
+            max-width: 600px;
             text-align: center;
         }
 
@@ -34,7 +34,7 @@
 
         .triangle-container {
             position: relative;
-            width: 300px;
+            width: 100%;
             height: 200px;
             margin: 20px auto;
         }
@@ -50,7 +50,7 @@
 
         .input-field {
             position: absolute;
-            width: 50px;
+            width: 60px;
             padding: 5px;
             font-size: 14px;
             border: 1px solid #ccc;
@@ -59,33 +59,35 @@
         }
 
         .side-a {
-            top: -25px;
-            left: 125px;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .side-b {
             bottom: 10px;
-            left: 50px;
+            left: 20%;
         }
 
         .side-c {
             bottom: 10px;
-            right: 50px;
+            right: 20%;
         }
 
-        .angle-a {
-            top: 10px;
+        .angle-alpha {
+            top: 20px;
             left: 20px;
         }
 
-        .angle-b {
-            top: 10px;
+        .angle-beta {
+            top: 20px;
             right: 20px;
         }
 
-        .angle-c {
+        .angle-gamma {
             bottom: 10px;
-            left: 140px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         button {
@@ -123,9 +125,9 @@
             <input type="number" class="input-field side-a" id="sideA" placeholder="A">
             <input type="number" class="input-field side-b" id="sideB" placeholder="B">
             <input type="number" class="input-field side-c" id="sideC" placeholder="C">
-            <input type="number" class="input-field angle-a" id="angleA" placeholder="∠A">
-            <input type="number" class="input-field angle-b" id="angleB" placeholder="∠B">
-            <input type="number" class="input-field angle-c" id="angleC" placeholder="∠C">
+            <input type="number" class="input-field angle-alpha" id="angleAlpha" placeholder="α">
+            <input type="number" class="input-field angle-beta" id="angleBeta" placeholder="β">
+            <input type="number" class="input-field angle-gamma" id="angleGamma" placeholder="γ">
         </div>
         <button onclick="calculate()">Рассчитать</button>
         <div class="result" id="result"></div>
@@ -147,41 +149,41 @@
             const sideA = parseFloat(document.getElementById('sideA').value);
             const sideB = parseFloat(document.getElementById('sideB').value);
             const sideC = parseFloat(document.getElementById('sideC').value);
-            const angleA = parseFloat(document.getElementById('angleA').value);
-            const angleB = parseFloat(document.getElementById('angleB').value);
-            const angleC = parseFloat(document.getElementById('angleC').value);
+            const angleAlpha = parseFloat(document.getElementById('angleAlpha').value);
+            const angleBeta = parseFloat(document.getElementById('angleBeta').value);
+            const angleGamma = parseFloat(document.getElementById('angleGamma').value);
 
             let result = '';
 
             try {
                 // Проверка на минимальное количество данных
-                const inputs = [sideA, sideB, sideC, angleA, angleB, angleC].filter(val => !isNaN(val));
+                const inputs = [sideA, sideB, sideC, angleAlpha, angleBeta, angleGamma].filter(val => !isNaN(val));
                 if (inputs.length < 3) {
                     throw new Error("Введите минимум 3 параметра.");
                 }
 
                 // Теорема синусов
-                if (!isNaN(sideA) && !isNaN(angleA) && !isNaN(sideB)) {
-                    const angleBValue = toDegrees(Math.asin((Math.sin(toRadians(angleA)) * sideB) / sideA));
-                    result += `Угол B: ${angleBValue.toFixed(2)}°<br>`;
+                if (!isNaN(sideA) && !isNaN(angleAlpha) && !isNaN(sideB)) {
+                    const angleBetaValue = toDegrees(Math.asin((Math.sin(toRadians(angleAlpha)) * sideB) / sideA));
+                    result += `Угол β: ${angleBetaValue.toFixed(2)}°<br>`;
                 }
 
-                if (!isNaN(sideA) && !isNaN(angleA) && !isNaN(angleB)) {
-                    const angleCValue = 180 - angleA - angleB;
-                    const sideCValue = (sideA * Math.sin(toRadians(angleCValue))) / Math.sin(toRadians(angleA));
+                if (!isNaN(sideA) && !isNaN(angleAlpha) && !isNaN(angleBeta)) {
+                    const angleGammaValue = 180 - angleAlpha - angleBeta;
+                    const sideCValue = (sideA * Math.sin(toRadians(angleGammaValue))) / Math.sin(toRadians(angleAlpha));
                     result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
                 }
 
                 // Теорема косинусов
-                if (!isNaN(sideA) && !isNaN(sideB) && !isNaN(angleC)) {
-                    const sideCValue = Math.sqrt(sideA ** 2 + sideB ** 2 - 2 * sideA * sideB * Math.cos(toRadians(angleC)));
+                if (!isNaN(sideA) && !isNaN(sideB) && !isNaN(angleGamma)) {
+                    const sideCValue = Math.sqrt(sideA ** 2 + sideB ** 2 - 2 * sideA * sideB * Math.cos(toRadians(angleGamma)));
                     result += `Сторона C: ${sideCValue.toFixed(2)}<br>`;
                 }
 
                 // Сумма углов треугольника
-                if (!isNaN(angleA) && !isNaN(angleB)) {
-                    const angleCValue = 180 - angleA - angleB;
-                    result += `Угол C: ${angleCValue.toFixed(2)}°<br>`;
+                if (!isNaN(angleAlpha) && !isNaN(angleBeta)) {
+                    const angleGammaValue = 180 - angleAlpha - angleBeta;
+                    result += `Угол γ: ${angleGammaValue.toFixed(2)}°<br>`;
                 }
 
                 // Вывод результата
